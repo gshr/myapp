@@ -3,12 +3,13 @@ from django.http import HttpResponse
 from .forms import RegistrationForm
 from .models import CustomerModel
 # Create your views here.
+from django.views import View
 
-
-def index(request):
+# class index(View):
     
-    if request.method == 'GET':
-        pass
+#     def get(self,request):
+#         pass
+        
         
 
 def login(request):
@@ -16,14 +17,10 @@ def login(request):
     if request.method == 'POST':
         email = request.POST['email']
         try:
-            print(email)
-            custObj=CustomerModel.objects.filter(email=email).first()
-            print(custObj)
+             custObj=CustomerModel.objects.filter(email=email).first()
         except:
             return HttpResponse("error")
 
-        print(custObj.password)
-        print(request.POST['password'])
         if (custObj.password == request.POST['password']):
             return render(request, "index.html", {"context":custObj})
             #  return HttpResponse(f"msg {custObj.first_name} ")
