@@ -1,4 +1,4 @@
-asgiref==3.5.2
+﻿asgiref==3.5.2
 Django==4.1
 django-rest-framework==0.1.0
 djangorestframework==3.13.1
@@ -11,3 +11,5 @@ gunicorn
 # new changes local
 
 # i am main
+
+#new brach changes
