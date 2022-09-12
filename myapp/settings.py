@@ -37,8 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user_auth'
+    'user_auth',
+    'rest_framework',
+    
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE':10
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -68,6 +74,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
 
 WSGI_APPLICATION = 'myapp.wsgi.application'
 
@@ -123,3 +131,82 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGGING = {
+    'version': 1,
+    # The version number of our log
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{name} {levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        }
+    },
+
+    # django uses some of its own loggers for internal operations. In case you want to disable them just replace the False above with true.
+    # A handler for WARNING. It is basically writing the WARNING messages into a file called WARNING.log
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'warning.log',
+            'formatter': 'verbose',
+        },
+        
+    },
+    # A logger for WARNING which has a handler called 'file'. A logger can have multiple handler
+    'loggers': {
+        'watchtower-logger': {
+            'handlers': ['file'], #notice how file variable is called in handler which has been defined above
+            'level': 'INFO',
+            'propagate': True,
+        },
+        
+    },
+}
+# import boto3
+
+# AWS_REGION_NAME = "us-west-2"
+
+# boto3_logs_client = boto3.client("logs", region_name=AWS_REGION_NAME)
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'root': {
+#         'level': 'DEBUG',
+#         # Adding the watchtower handler here causes all loggers in the project that
+#         # have propagate=True (the default) to send messages to watchtower. If you
+#         # wish to send only from specific loggers instead, remove "watchtower" here
+#         # and configure individual loggers below.
+#         'handlers': ['watchtower', 'console'],
+#     },
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#         'watchtower': {
+#             'class': 'watchtower.CloudWatchLogHandler',
+#             'boto3_client': boto3_logs_client,
+#             'log_group_name': 'YOUR_DJANGO_PROJECT_NAME',
+#             # Decrease the verbosity level here to send only those logs to watchtower,
+#             # but still see more verbose logs in the console. See the watchtower
+#             # documentation for other parameters that can be set here.
+#             'level': 'INFO'
+#         }
+#     },
+#     'loggers': {
+#         # In the debug server (`manage.py runserver`), several Django system loggers cause
+#         # deadlocks when using threading in the logging handler, and are not supported by
+#         # watchtower. This limitation does not apply when running on production WSGI servers
+#         # (gunicorn, uwsgi, etc.), so we recommend that you set `propagate=True` below in your
+#         # production-specific Django settings file to receive Django system logs in CloudWatch.
+#         'django': {
+#             'level': 'DEBUG',
+#             'handlers': ['watchtower'],
+#             'propagate': False
+#         }
+#         # Add any other logger-specific configuration here.
+#     }
+# }
