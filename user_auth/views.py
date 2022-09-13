@@ -74,36 +74,39 @@ class index(ListAPIView):
            
 
     #         serializer_class = ProductSerializer
-            
-            
-        
-   
-        
-        
 
-def login(request):
-    
-    if request.method == 'POST':
-        email = request.POST['email']
+class Login(APIView):
+    def post(self,request):
+        response = Response()
+        email = request.POST.get('email')
         try:
-             custObj=CustomerModel.objects.filter(email=email).first()
+            print(email)
+            custObj = CustomerModel.objects.get(email="gaurav.sharma1054@gmail.com")
+            print(custObj)
         except:
-            return HttpResponse("error")
+            return Response({"error":""})
 
-        if (custObj.password == request.POST['password']):
-            return render(request, "index.html", {"context":custObj})
-            #  return HttpResponse(f"msg {custObj.first_name} ")
+        if custObj.password == "123":
+                response.set_cookie(
+                    key='AUTH_COOKIE',
+                    value="access",
+                    secure=True,
+                    httponly=True,
+                    samesite='None'
+                )
+                data={}
+                response.data = {"Success": "Login successfully", "data": data}
+
+                return response
         else:
-            return HttpResponse("msg Error")
-            
-            
-            
-        
-    
-    return render(request, "login.html")
+            return Response({"Invalid": "Invalid username or password!!"}, status=status.HTTP_404_NOT_FOUND)
 
-    
-    
+    def get(self,request):
+        try:
+            if request.COOKIES['AUTH_COOKIE']:
+                return Response({"data":request.COOKIES['AUTH_COOKIE']})
+        except:
+            return Response({"Error":"Login"})
 
 def register(request):
     if request.method == 'GET':
